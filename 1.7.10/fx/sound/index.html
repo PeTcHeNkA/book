@@ -5520,6 +5520,71 @@
 
 
 <h1 id="звуки">Звуки<a class="headerlink" href="#звуки" title="Permanent link">#</a></h1>
+<p>Создадим файл <code>sounds.json</code> и папку <code>sounds</code> по пути:
+<div class="highlight"><pre><span></span><code>└── src    
+    └── main
+        └── resources
+            └── assets
+                └── tut
+</code></pre></div>
+У вас в папке <code>tut</code> должен быть создан файл <code>sounds.json</code>!</p>
+<p>Отредактируем его!
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;test_sound&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;player&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*modid*:myTestSound&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+* <code>category</code> - указывает на то, какая категория будет у данного звука, т.е. если мы указали <code>player</code>, то в игре, в настройках звука мы сможем отключить свой звук передвинув ползунок <code>Игроки</code>. Категории звуков в игре:
+    - <code>master</code> - общие звуки
+    - <code>music</code> - музыка
+    - <code>record</code> - пластинка
+    - <code>weather</code> - погода
+    - <code>block</code> - блоки
+    - <code>hostile</code> - враждебные сущности
+    - <code>neutral</code> - нейтральные или дружелюбные(как написано в игре)
+    - <code>player</code> - игроки
+    - <code>ambient</code> - окружение
+    - <code>voice</code> - голос/речь
+* <code>sounds</code> - массив звуковых файлов, который будет поочерёдно проигрываться.
+    - <code>name</code> - название звука без формата
+    - <code>volume</code> - громкость. Чем выше значение, тем дальше будет слышимость
+    - <code>pitch</code> - высота звука. Если 1.0, то звук будет нормально проигрываться, если же ниже, то звук будет иметь эффект замедления
+    - <code>weight</code> - шанс воспроизведения звука
+    - <code>stream</code> - имеет два положения <code>true/false</code>, при <code>true</code> проигрывается звук из файла. Это нужно, чтобы избежать проблем со звучанием звука в игре, т.е. если ваш звук более одной минуты, то рекомендуется выставить данный параметр на <code>true</code>.</p>
+<p>Продвинутый пример:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;test_sound&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;player&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;sounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*modid*:myTestSound&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;*modid*:myTestSound2&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;pitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;nextSound&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;sounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*modid*:nextSound&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Чтобы воспроизвести наш звук, добавим такой код:
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> *  x, y, z - это позиция на которой будет проигрываться звук</span>
+<span class="cm"> *  Sounds.test - это наш звук из ранее созданного класса Sounds</span>
+<span class="cm"> *  SoundCategory.PLAYERS - категория звука</span>
+<span class="cm"> *  1.0 - громкость</span>
+<span class="cm"> *  1.0 - высота</span>
+<span class="cm"> *  false - задержка</span>
+<span class="cm"> */</span>
+<span class="n">world</span><span class="p">.</span><span class="na">playSound</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test_sound&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">SoundCategory</span><span class="p">.</span><span class="na">PLAYERS</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0F</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0F</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span>
+</code></pre></div></p>
 
 
 
