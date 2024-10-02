@@ -13,15 +13,34 @@ package ru.mcmodding.tutorial.common.handler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.item.ItemStack;
+import net.minecraft.init.Items;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.Random;
+
 public class FMLEventListener {
+    private static final ItemStack[] REWARDS = {
+        new ItemStack(Items.diamond, 1),
+        new ItemStack(Items.gold_ingot, 5),
+        new ItemStack(Items.iron_ingot, 10),
+        new ItemStack(Items.apple, 3)
+    };
+
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        // Если игрока зовут "PlayerName", то отправляем ему сообщение с приветствием
+        // Если игрока зовут "PlayerName", то отправляем ему сообщение с приветствием и выдаём случайный предмет
         if (event.player.getCommandSenderName().equals("PlayerName")) {
-            event.player.addChatMessage(new ChatComponentText(String.format("Привет, %s!", event.player.getCommandSenderName())));
+            event.player.addChatMessage(new ChatComponentText(String.format("Привет, %s! Вот твой подарок!", event.player.getCommandSenderName())));
+            
+            ItemStack reward = getRandomReward();
+            event.player.inventory.addItemStackToInventory(reward);
         }
+    }
+
+    private ItemStack getRandomReward() {
+        Random random = new Random();
+        return REWARDS[random.nextInt(REWARDS.length)];
     }
 }
 ```
